@@ -1,0 +1,111 @@
+{
+  "meta_data": {
+    "dataset_name":"Big Agri Data",
+    "created_by": "Tsegazeab Hailu Tedla",
+    "created_on": "time stamp",
+    "user_id": "17959",
+    "description": "Dataset description"
+  },
+  "farmland_location": {
+     "latitude": 59.6605,
+     "longitude": 10.7818,
+     "altitude": 93.3,
+     "farm_identifier":"23444",
+     "farm_size": 234,
+     "nearby_source_station_id":"SN17850"
+  },
+  "referencetime": {
+      "from_date": "2024-01-01",
+      "to_date": "2024-02-01"
+  },
+  "data_source_types": {
+    "weather":{
+		"method":"upload",
+		"source":"LOCAL",
+		"request_type":"file",
+		"depth":[
+		],
+		"value":[
+		],
+		"data_features":{
+		}
+      },
+    "soil":{
+		"method":"upload",
+		"source":"Local",
+		"request_type":"http",
+		"depth":[
+		],
+		"value":[
+		],
+		"data_features":{
+		}
+	},
+	"IoT_sensors":{
+		"method":"upload",
+		"source":"Local",
+		"request_type":"http",
+		"depth":[
+		],
+		"value":[
+		],
+		"data_features":{
+		}
+	},
+	"crop":{
+		"method":"upload",
+		"source":"Local",
+		"request_type":"http",
+		"depth":[
+		],
+		"value":[
+		],
+		"data_features":{
+		}
+	},
+	"farming_practice":{
+		"method":"upload",
+		"source":"LOCAL",
+		"request_type":"http",
+		"depth":[
+		],
+		"value":[
+		],
+		"data_features":{
+		}
+	},
+	"agrisenze":{
+		"method":"upload",
+		"source":"LOCAL",
+		"request_type":"http",
+		"depth":[
+		],
+		"value":[
+		],
+		"data_features":{
+		}
+	},
+	"VI":{
+		"method":"upload",
+		"source":"LOCAL",
+		"request_type":"http",
+		"depth":[
+		],
+		"value":[
+		],
+		"data_features":{
+		}
+	},
+	"topography":{
+		"method":"upload",
+		"source":"LOCAL",
+		"request_type":"http",
+		"depth":[
+		],
+		"value":[
+		],
+		"data_features":{
+		}
+	}
+  }
+}

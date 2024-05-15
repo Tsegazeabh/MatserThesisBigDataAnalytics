@@ -1,12 +1,6 @@
 import csv
-from typing import Any, Dict, Optional
-import bson
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
-from utils.firebase_storage import firebase_admin, db
-from models.agri_big_data import AgriBigData
-from bson import ObjectId
-from schemas.agri_big_data_schema import bigAgriDataEntity
-import httpx
+from fastapi import APIRouter, File, HTTPException, UploadFile
+from utils.firebase_storage import db
 
 #========================================================
 # Big Agri Data API End Points Router Implementation
@@ -105,156 +99,44 @@ async def fetch_all_agri_data_sources():
 
 # Fetch a big agri data aggregated from different data sources
 @agriBigData.post('/fetch-agri-big-data')
-async def upload_agri_big_data(geographic_id: str, csv_file: Optional[UploadFile] = File(None), big_agri_form_data: Optional[Dict[str, Any]] = Form(None)):
+async def upload_agri_big_data(geographic_id: str, 
+                           csv_file: UploadFile = File(..., media_type=["text/csv", "application/vnd.ms-excel"], description='Upload soil data from excel/csv file'), 
+                           ):
     try:
         # Check if the referenced geographic data exists in the database
         geographic_document = geographic_data_ref.document(geographic_id).get()
         if not geographic_document.exists:
-            raise HTTPException(status_code=404, detail="Geographic id not found")
-
+            raise HTTPException(status_code=500, detail="Geographic Id not found")
         data_dict = {}
-        # Check if data is coming from user input as JSON object or from any API services
-        # if agri_big_data is not None:
-        #     data_dict = agri_big_data.dict()
+        big_agri_data_from_file_dict = {}      
         # Check if data is coming from a CSV file
         if csv_file:
             csv_data = await csv_file.read()
             csv_rows = csv_data.decode('utf-8').splitlines()
-            csv_reader = csv.DictReader(csv_rows)
-            for row in csv_reader:
-                # Extract data from each row
-                average_daily_temperature = float(row['average_daily_temperature'])
-                cumulative_daily_precipitation = float(row['cumulative_daily_precipitation'])
-                relative_humidity = float(row['relative_humidity'])
-                wind_speed = float(row['wind_speed'])
-                wind_direction = row['wind_direction']
-                total_solar_radiation = float(row['total_solar_radiation'])
-                data_source = row.get('data_source', None)
-                
-                # Create new big agri data from CSV row
-                data_dict = {
-                    "average_daily_temperature": average_daily_temperature,
-                    "cumulative_daily_precipitation": cumulative_daily_precipitation,
-                    "relative_humidity": relative_humidity,
-                    "wind_speed": wind_speed,
-                    "wind_direction": wind_direction,
-                    "total_solar_radiation": total_solar_radiation,
-                    "data_source": data_source,
-                }
-          # # Check if data is coming from form fields as JSON object
-        elif big_agri_form_data is not None:
-            data_dict = big_agri_form_data.dict()
+            csv_reader = csv.DictReader(csv_rows)            
+            # Iterate over each row
+            for idx, row in enumerate(csv_reader, start=1):
+                if any(cell.strip() != '' for cell in row.values()):
+                    row_data = {}
+                    for column_name, value in row.items():
+                        row_data[column_name] = value                    
+                    # Add the row data to the main dictionary using index as key
+                    data_dict[idx] = row_data 
+                    big_agri_data_from_file_dict = row_data
+                    # Add the geographic_id to the data dictionary
+                    big_agri_data_from_file_dict["geographic_id"] = geographic_id
+                    doc_ref = agri_big_data_ref.add(big_agri_data_from_file_dict)
+                else:
+                    raise HTTPException(status_code=500, detail="The file is empty. Please add some data to it!")   
         else:
-            raise HTTPException(status_code=400, detail="No data provided")
-
-        # Add the geographic_id to the data dictionary
-        data_dict["geographic_id"] = geographic_id
-        # Add the AgriSenze to the agri_big_data collection
-        doc_ref = agri_big_data_ref.add(data_dict)
-        # Retrieve the inserted document using its ID
-        inserted_document = agri_big_data_ref.document(doc_ref[1].id).get()
+            raise HTTPException(status_code=500, detail="No file selected. Please select excel/csv file and try again!")
+        
+        inserted_document = soil_data_ref.document(doc_ref[1].id).get()
         if inserted_document.exists:
-            # Convert the inserted document to a dictionary
-            agri_big_data_dict = inserted_document.to_dict()
-            # Add the document ID to the dictionary
-            agri_big_data_dict["id"] = doc_ref[1].id
-            # Return the created AgriSenze entity
-            return bigAgriDataEntity(agri_big_data_dict)
+            return data_dict
         else:
-            raise HTTPException(status_code=404, detail="Inserted document not found")
+            raise HTTPException(status_code=500, detail="Inserted document not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Something went wrong uploading the file to database. Please try again!")
+
     
-
-# # Get a specific Big Agri Data
-# @bigAgriData.get("/big-agri-data/{agri_big_data_id}")
-# async def find_agri_big_data(agri_big_data_id):
-#     try:
-#         doc = agri_big_data_ref.document(agri_big_data_id).get()
-#         if doc.exists:
-#             return {"agri_big_data": doc.to_dict()}
-#         else:
-#             raise HTTPException(status_code=404, detail="Geographic data not found")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-
-# # Get all Big Agris data
-# @bigAgriData.get('/big-agri-data')
-# async def find_all_big_agris_data():
-#     try:
-#         agri_big_data = []
-#         for doc in agri_big_data_ref.stream():
-#             # Get the document ID
-#             doc_id = doc.id
-#             # Get the document data as a dictionary
-#             doc_data = doc.to_dict()
-#             # Create a new dictionary containing both the ID and data
-#             combined_data = {"id": doc_id, **doc_data}
-#             # Append the combined data to the list
-#             agri_big_data.append(combined_data)        
-#         return {"agri_big_data": agri_big_data}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-    
-
-# # Create a new Big Agri Data        
-# @bigAgriData.post('/big-agri-data')
-# async def create_agri_big_data(geographic_id: str, agri_big_data: AgriBigData):
-#     try:
-#         # Check if the referenced geographic data exists in the database
-#         geographic_document = geographic_data_ref.document(geographic_id).get()
-#         if not geographic_document.exists:
-#             raise HTTPException(status_code=404, detail="Geographic id not found")
-#         # Convert bigAgriData object to dictionary
-#         data_dict: Dict[str, Any] = agri_big_data.dict()
-#         # Add the geographic_id to the data dictionary
-#         data_dict["location_id"] = geographic_id
-#         # Add the Big Agri Data to the agri_big_data collection
-#         doc_ref = agri_big_data_ref.add(data_dict)
-#         # Retrieve the inserted document using its ID
-#         inserted_document = agri_big_data_ref.document(doc_ref[1].id).get()
-#         if inserted_document.exists:
-#             # Convert the inserted document to a dictionary
-#             agri_big_data_dict = inserted_document.to_dict()
-#             # Add the document ID to the dictionary
-#             agri_big_data_dict["id"] = doc_ref[1].id
-#             # Return the created Big Agri Data entity
-#             return bigAgriDataEntity(agri_big_data_dict)
-#         else:
-#             raise HTTPException(status_code=404, detail="Inserted document not found")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-
-# # Update an existing Big Agri Data
-# @bigAgriData.put("/big-agri-data/{agri_big_data_id}")
-# async def update_agri_big_data(agri_big_data_id: str, agri_big_data: AgriBigData):
-#     try:
-#         # Retrieve the existing document
-#         agri_big_data_doc = agri_big_data_ref.document(agri_big_data_id).get()
-#         if agri_big_data_doc.exists:
-#             # Update the document with the new data
-#             agri_big_data_ref.document(agri_big_data_id).set(agri_big_data.dict())
-#             # Retrieve the inserted document using its ID
-#             inserted_document = agri_big_data_ref.document(agri_big_data_id).get()
-#             if inserted_document.exists:
-#                 # Convert the inserted document to a dictionary
-#                 agri_big_data_dict = inserted_document.to_dict()
-#                 # Add the document ID to the dictionary
-#                 agri_big_data_dict["id"] = agri_big_data_id
-#                 # Return the created Big Agri Data entity
-#                 return bigAgriDataEntity(agri_big_data_dict)
-#             else:
-#                 raise HTTPException(status_code=404, detail="Inserted Big Agri Data document not found")
-#         else:
-#             raise HTTPException(status_code=404, detail="Big Agri Data not found")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-
-# # Delete an existing Big Agri Data
-# @bigAgriData.delete("/big-agri-data/{agri_big_data_id}")
-# async def delete_agri_big_data(agri_big_data_id):
-#     try:
-#         agri_big_data_ref.document(agri_big_data_id).delete()
-#         return {"message": "Big Agri Data deleted successfully"}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))

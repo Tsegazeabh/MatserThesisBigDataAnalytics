@@ -1,13 +1,11 @@
-from typing import List, Optional
-from uuid import UUID, uuid4
+from typing import Any, Dict
 from pydantic import BaseModel, Field
-from models.geographic_data import GeographicData
 
 class VIData(BaseModel):
-    NDVI:str
-    DVI:str
-    EVI:Optional[float]
-    NDWI:Optional[float]
-    MSAVI:Optional[float]
-    TVI:Optional[float]
-    geographic_id: GeographicData = Field(..., alias="geographic_id")
+    data: Dict[str, Any] ={
+                            "NDVI": 0.56,
+                            "EVI": 0.90,
+                            "NDWI":0.42,
+                            "SAVI": 0.30
+                          }
+    geographic_id: str = Field(..., alias="geographic_id")

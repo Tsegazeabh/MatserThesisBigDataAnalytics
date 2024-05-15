@@ -1,20 +1,21 @@
-from typing import List, Optional
-from uuid import UUID, uuid4
+from typing import Any, Dict
 from pydantic import BaseModel, Field
-from models.geographic_data import GeographicData
 
 class SoilData(BaseModel):
-    soil_name:str
-    soil_type:str
-    soil_pH:Optional[float]
-    soil_CEC:Optional[float]
-    soil_salinity:Optional[float]
-    soil_bulk_density:Optional[float]
-    soil_OC:Optional[float]
-    soil_clay:Optional[float]
-    soil_phosphorus:Optional[float]
-    soil_potassium:Optional[float]
-    soil_temperature: Optional[float]
-    soil_moisture:Optional[float]
-    soil_electrical_conductivity:Optional[float]
-    geographic_id: GeographicData = Field(..., alias="geographic_id")
+   data: Dict[str, Any] = {
+                           "soil_name":"soil_name",
+                           "soil_type":"soil_type",
+                           "soil_pH":"soil_pH",
+                           "soil_CEC":"soil_CEC",
+                           "soil_salinity":"soil_salinity",
+                           "soil_bulk_density":"soil_bulk_density",
+                           "soil_OC":"soil_OC",
+                           "soil_clay":"soil_clay",        
+                           "soil_phosphorus":"soil_phosphorus",
+                           "soil_potassium":"soil_potassium",
+                           "soil_temperature":"soil_temperature",
+                           "soil_moisture":"soil_moisture",
+                           "soil_electrical_conductivity":"soil_electrical_conductivity",
+                           "data_source":"data_source"
+                        }
+   geographic_id: str = Field(..., alias="geographic_id")
