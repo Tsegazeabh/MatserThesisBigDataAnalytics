@@ -1,19 +1,18 @@
-import datetime
-from typing import List, Optional
-from uuid import UUID, uuid4
+from typing import Any, Dict
 from pydantic import BaseModel, Field 
-from models.geographic_data import GeographicData
 
 class IoTSensorsData(BaseModel):
-    sensor_Id: str
-    sensor_type: str
-    sensor_location: Optional[str]
-    sensor_station: Optional[str]
-    sensor_depth: Optional[str]
-    soil_light_intensity: Optional[float]
-    soil_light_illumination_duration_days: Optional[float]
-    phosphorus_concentration: Optional[float]
-    potassium_concentration: Optional[float]
-    CO2_concentration: Optional[float]
-    data_source: Optional[str]
-    geographic_id: GeographicData = Field(..., alias="geographic_id")
+    data: Dict[str, Any] = {
+                            "sensor_Id":"sensor_Id",
+                            "sensor_type":"sensor_type",
+                            "sensor_location":"sensor_location",
+                            "sensor_station":"sensor_station",
+                            "sensor_depth":"sensor_depth",
+                            "phosphorus_concentration":"phosphorus_concentration",
+                            "potassium_concentration":"potassium_concentration",
+                            "soil_light_intensity":"soil_light_intensity",
+                            "soil_light_illumination_duration_days":"soil_light_illumination_duration_days",
+                            "CO2_concentration":"CO2_concentration",
+                            "data_source":"data_source"
+                        }
+    geographic_id: str = Field(..., alias="geographic_id")

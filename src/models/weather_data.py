@@ -1,18 +1,18 @@
-from typing import List, Optional
-from uuid import UUID, uuid4
+from typing import Any, Dict
 from pydantic import BaseModel, Field 
-from models.geographic_data import GeographicData
 
 class WeatherData(BaseModel):
-    best_estimate_mean_air_temperature_P1M : Optional[float]
-    best_estimate_sum_precipitation_amount_P1M :Optional[float]
-    mean_relative_humidity_P1M :Optional[float]
-    mean_wind_speed_P1M: Optional[float]
-    mean_surface_air_pressure_P1M: Optional[float]
-    best_estimate_mean_air_temperature_P1D :Optional[float]
-    best_estimate_sum_precipitation_amount_P1D :Optional[float]
-    mean_relative_humidity_P1D :Optional[float]
-    mean_wind_speed_P1D: Optional[float]
-    mean_surface_air_pressure_P1D: Optional[float]
-    data_source: Optional[str]
-    geographic_id: GeographicData = Field(..., alias="geographic_id")
+    data: Dict[str, Any] = {
+                            "best_estimate_mean_air_temperature_P1M":"best_estimate_mean_air_temperature_P1M",
+                            "best_estimate_sum_precipitation_amount_P1M":"best_estimate_sum_precipitation_amount_P1M",
+                            "mean_relative_humidity_P1M":"mean_relative_humidity_P1M",
+                            "mean_wind_speed_P1M":"mean_wind_speed_P1M",
+                            "mean_surface_air_pressure_P1M":"mean_surface_air_pressure_P1M",
+                            "best_estimate_mean_air_temperature_P1D":"best_estimate_mean_air_temperature_P1D",
+                            "best_estimate_sum_precipitation_amount_P1D":"best_estimate_sum_precipitation_amount_P1D",
+                            "mean_relative_humidity_P1D":"mean_relative_humidity_P1D",
+                            "mean_wind_speed_P1D":"mean_wind_speed_P1D",
+                            "mean_surface_air_pressure_P1D":"mean_surface_air_pressure_P1D",
+                            "data_source":"data_source"
+                         }
+    geographic_id: str = Field(..., alias="geographic_id")

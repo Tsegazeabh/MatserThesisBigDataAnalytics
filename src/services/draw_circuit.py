@@ -41,10 +41,8 @@ def draw_parallel(draw, parallel_str, parallel_list, component):
         for index, item in enumerate(parallel_list):
             if (parallel_elem in item) and (not parallel_elem.startswith('P')):
                 element_location = index
-                print('Parallel Element Location:',parallel_list[element_location])
                 for element in parallel_list[element_location].split(','):
                     # Check if the current element starts with 'P'
-                    print('Element: ', element)
                     if element.startswith('P'):
                         # Check if the current element comes before the specific string
                         if element != parallel_elem:
