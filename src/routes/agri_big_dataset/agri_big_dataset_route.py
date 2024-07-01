@@ -16,7 +16,7 @@ agriBigDataset = APIRouter(tags=["Build Agri Big Dataset APIs"])
 agri_big_dataset_ref = db.collection("agri_big_data")
     
 @agriBigDataset.post("/generateAgriBigDataset")
-async def process_agri_big_dataset(dataset_format: Json = Form( default=const.BIG_AGRI_DATASET_FORMAT, title='Big Agri Dataset Format',description='Enter the pre-formatted JSON configuration and data (Follow recommended JSON format)'),
+async def process_agri_big_dataset(dataset_format: Dict = Form( default=const.BIG_AGRI_DATASET_FORMAT, title='Big Agri Dataset Format',description='Enter the pre-formatted JSON configuration and data (Follow recommended JSON format)'),
                                    weather_csv_file: UploadFile = File(None, media_type=["text/csv", "application/vnd.ms-excel"], description='Upload the weather data in csv/excel file format'), 
                                    soil_csv_file: UploadFile = File(None, media_type=["text/csv", "application/vnd.ms-excel"], description='Upload the soil data in csv/excel file format'), 
                                    crop_csv_file: UploadFile = File(None, media_type=["text/csv", "application/vnd.ms-excel"], description='Upload the crop data in csv/excel file format'), 
@@ -52,7 +52,6 @@ async def process_agri_big_dataset(dataset_format: Json = Form( default=const.BI
                         if(weather_data_info.data_features != {}):
                             # Implement logic to fetch data based on the selected source and period
                             weather_data_response = await weather_service.fetch_weather_data_features(data_source_info, dataset_requested.farmland_location, dataset_requested.referencetime)
-                            
                         else:
                             weather_data_response = {}
                     elif method == "upload":
