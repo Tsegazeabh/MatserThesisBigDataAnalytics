@@ -12,9 +12,9 @@ predictTarget = APIRouter(tags=["ML Based Soil Temperature Prediction Models' AP
 
 # Prediction endpoint
 @predictTarget.post("/predictSoilTemperature")
-async def predict_target(latitude:float = Form(..., description='Enter latitude with less than or equal to 4 decimal points'), 
-                         longitude:float = Form(..., description='Enter longitude with less than or equal to 4 decimal points'), 
-                         altitude:int = Form(..., description='Enter approximate altitude integer value without any decimal points'), 
+async def predict_target(latitude:float = Form(..., description='Enter latitude(degree) with less than or equal to 4 decimal points'), 
+                         longitude:float = Form(..., description='Enter longitude(degree) with less than or equal to 4 decimal points'), 
+                         altitude:int = Form(..., description='Enter approximate altitude(meter) integer value without any decimal points'), 
                          select_input_data_source_option: SoilTempDataSources = Form(..., description="Select data source option"),
                          input_data: str = Form(..., description='Enter folder path to the input data format'), 
                          targets_string: str = Form(..., description='Enter comma seperated target names(names should match trained model target names. Example: ST2,ST5,ST10,ST20,ST50,ST100)'), 

@@ -19,13 +19,9 @@ async def find_all_VIs_data():
     try:
         VI_data = []
         for doc in VI_data_ref.stream():
-            # Get the document ID
             doc_id = doc.id
-            # Get the document data as a dictionary
             doc_data = doc.to_dict()
-            # Create a new dictionary containing both the ID and data
             combined_data = {"id": doc_id, **doc_data}
-            # Append the combined data to the list
             VI_data.append(combined_data)        
         return {"VI_data": VI_data}
     except Exception as e:
