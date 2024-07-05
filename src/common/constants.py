@@ -68,7 +68,7 @@ DEFAULT_OPEN_WEATHER_FEATURES =[
 
 # Configure this path to locate the exported static files destination
 STATIC_FILES_OUTPUT_PATH = "src/files/data/outputs"
-OPEN_WEATHER_API_KEY = "026b37f8d11162e502240de2afd6ce08"
+OPEN_WEATHER_API_KEY = "add-your-open-weather-key"
 OPEN_WEATHER_HOSTORY_URL = "https://history.openweathermap.org/data/2.5/history/city"
 ZP_REPORT_FETCHING_URL = "https://feature-extraction-value-zu3hsmhdza-nw.a.run.app/api/v0/extractInfo"
 BIG_AGRI_DATASET_FORMAT = {
