@@ -9,7 +9,7 @@ MET_USER_AGENT = "259646@usn.no"
 # This URL is used to fetch weather history data from MET Frost API services
 MET_OBSERVATIONS_URL = "https://frost.met.no/observations/v0.jsonld"
 # This client ID is used for weather history data fetching authorization
-MET_CLIENT_ID = "732d88c6-1b10-40a3-8c2b-184d03ac49e8"
+MET_CLIENT_ID = "732d88c6-1b10-1423-8c2b-45743216781"
 # This URL is used to fetch soil data from ISRIC soilgrids API services
 ISRIC_SOILGRIDS_URL = "https://rest.isric.org/soilgrids/v2.0/properties/query"
 # The parameters dict is a sample default setting used as a header for weather history data fetching (can be modified)
